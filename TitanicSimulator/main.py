@@ -52,6 +52,7 @@ def get_class(info):
             #add class to dictionary
             if user_class == 'crew':
                 user_class = user_class.title()
+                info['class'] = user_class
             else:
                 info['class'] = user_class
             break
@@ -85,14 +86,16 @@ def probability(user_info):
 def titanic_simulator():
     print('Hello!\n' 'You are a passenger on the titanic. Please fill out some information to find out if you survive or not.\n')
     get_user_input()
+    print(user_info['class'])
+
     survival_probability = probability(user_info)
     death_probability = float(1.0 - survival_probability)
 
     outcome = random.choice(['Survived','Dead'], p=[survival_probability, death_probability])
     if outcome == 'Survived':
-        print(f"\nCongratulations, you survived! Your survival probability was approximately {survival_probability} or {(survival_probability * 100)}%")
+        print(f"\nCongratulations, you survived! Your probability of survival  was approximately {survival_probability} or {(survival_probability * 100)}%")
     else:
-        print(f"\nSorry, but you didn't survive! Your survival probability was approximately {survival_probability} or {(survival_probability * 100)}%")
+        print(f"\nSorry, but you didn't survive! Your probability of survival  was approximately {survival_probability} or {(survival_probability * 100)}%")
 
 titanic_simulator()
 
