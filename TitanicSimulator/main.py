@@ -1,4 +1,6 @@
 import numpy as np
+from numpy import random
+
 import pandas as pd
 
 # reads data from titanic.csv
@@ -7,15 +9,8 @@ titanic_csv = pd.read_csv('files/titanic.csv', index_col=0)
 
 user_info = {}
 
-
 # turns data into a data frame
 titanic_df = pd.DataFrame(titanic_csv)
-#print(titanic_df)
-
-
-# gets total number of passengers
-total_passengers = titanic_df['Freq'].sum()
-
 
 #get gender
 def get_gender():
@@ -71,9 +66,6 @@ def get_user_input():
     get_age()
     get_class(user_info)
 
-get_user_input()
-
-
 def probability(user_info):
     # gets group data that matches the user
     group = titanic_df[
@@ -90,14 +82,20 @@ def probability(user_info):
 
     return survival_probability
 
+def titanic_simulator():
+    print('Hello!\n' 'You are a passenger on the titanic. Please fill out some information to find out if you survive or not.\n')
+    get_user_input()
+    survival_probability = probability(user_info)
+    death_probability = float(1.0 - survival_probability)
 
-probability(user_info)
+    outcome = random.choice(['Survived','Dead'], p=[survival_probability, death_probability])
+    if outcome == 'Survived':
+        print(f"\nCongratulations, you survived! Your survival probability was approximately {survival_probability} or {(survival_probability * 100)}%")
+    else:
+        print(f"\nSorry, but you didn't survive! Your survival probability was approximately {survival_probability} or {(survival_probability * 100)}%")
 
-def introduction():
-    print('Hello!\n' 'You are a passenger on the titanic. Please fill out some information to find out if you survive or not.')
+titanic_simulator()
 
-
-    #determine survival rate
 
 
 
