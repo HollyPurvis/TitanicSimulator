@@ -1,0 +1,1 @@
+using the exported data from the titanic dataset in R I set up this application where a user is a passenger on the titanic. The sex, age, and class they choose all determine their probability of survival.
