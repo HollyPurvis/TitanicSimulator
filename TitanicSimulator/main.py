@@ -16,26 +16,6 @@ titanic_df = pd.DataFrame(titanic_csv)
 # gets total number of passengers
 total_passengers = titanic_df['Freq'].sum()
 
-#gets classes
-
-#print(total_passengers)
-
-
-#print(children_passengers)
-
-
-
-def child_probability():
-    # filters for children
-    total_children = titanic_df[titanic_df['Age'] == 'Child']['Freq'].sum()
-
-    #filters for children in 1st class and survived
-    first_class_children = titanic_df[(titanic_df['Age'] == 'Child') & (titanic_df['Survived'] == 'Yes')]
-    first_class_children = first_class_children[first_class_children['Class'] == '1st']['Freq'].sum()
-    print(first_class_children)
-
-
-child_probability()
 
 #get gender
 def get_gender():
@@ -46,7 +26,7 @@ def get_gender():
         else:
             break
     #add input to user info
-    user_info['gender'] = user_sex
+    user_info['gender'] = user_sex.title()
 
 #get age
 def get_age():
@@ -57,10 +37,9 @@ def get_age():
         else:
             break
     #add input to user info
-    user_info['age'] = user_age
+    user_info['age'] = user_age.title()
 
-get_gender()
-get_age()
+
 #get class
 def get_class(info):
     passenger_class = list(titanic_df['Class'].unique())
@@ -76,13 +55,44 @@ def get_class(info):
         user_class = input('Please enter a class: ').strip().lower()
         if user_class in passenger_class:
             #add class to dictionary
-            info['class'] = user_class
+            if user_class == 'crew':
+                user_class = user_class.title()
+            else:
+                info['class'] = user_class
             break
         else:
             print('Sorry. Please enter a valid class')
+            for c in passenger_class:
+                print(c)
 
-get_class(user_info)
-print(user_info)
+
+def get_user_input():
+    get_gender()
+    get_age()
+    get_class(user_info)
+
+get_user_input()
+
+
+def probability(user_info):
+    # gets group data that matches the user
+    group = titanic_df[
+        (titanic_df['Age'] == user_info['age'])
+        & (titanic_df['Class'] == user_info['class'])
+        & (titanic_df['Sex'] == user_info['gender'])
+    ]
+    #gets total number of people in that specific group
+    sum_group = group['Freq'].sum()
+    # filters for survivors and turns it into an int
+    survivors = int(group[(group['Sex'] == user_info['gender']) & (group['Survived'] == 'Yes')]['Freq'].iloc[0])
+    #calculates probability for survival
+    survival_probability = round((survivors / sum_group), 2)
+
+    return survival_probability
+
+
+probability(user_info)
+
 def introduction():
     print('Hello!\n' 'You are a passenger on the titanic. Please fill out some information to find out if you survive or not.')
 
