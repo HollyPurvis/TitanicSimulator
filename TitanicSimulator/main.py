@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import random
-
+import matplotlib.pyplot as plt
 import pandas as pd
 
 # reads data from titanic.csv
@@ -86,6 +86,7 @@ def menu():
         if selection.isdigit():
             selection = int(selection)
             menu_location = int(selection)
+            break
 
             # Check for the break condition
             if selection == 3:
@@ -98,14 +99,9 @@ def menu():
         else:
             print("Invalid input. Please enter a number.")
 
-
-
-
-menu()
-
 def check_user_info():
     #checks if user has already selected something
-    if bool(user_info) == False:
+    if not bool(user_info):
         print('Hello!\n' 'Please select from the following to learn more about about those on the Titanic.\n')
         get_user_input()
     else:
@@ -159,7 +155,88 @@ def titanic_simulator():
 
 #titanic_simulator()
 
-def survival_statistics():
-    check_user_info()
+def sex_statistics():
+    labels = 'Male', 'Female'
 
-#survival_statistics()
+    #get total passenger number
+    total_passengers = titanic_df["Freq"].sum()
+    female_survivors = titanic_df[(titanic_df['Sex'] == 'Female') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    female_percentage = float((female_survivors / total_passengers) * 100)
+    male_survivors = titanic_df[(titanic_df['Sex'] == 'Male') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    male_percentage = float(( male_survivors / total_passengers) * 100)
+
+    percentages = [male_percentage, female_percentage]
+    fig, ax = plt.subplots()
+    ax.pie(percentages, labels=labels, autopct='%.2f')
+    plt.title('Female vs Male Titanic Survivors')
+    plt.show()
+
+def age_statistics():
+    labels = 'Adult', 'Child'
+
+    #get total passenger number
+    total_passengers = titanic_df["Freq"].sum()
+
+    #get adult survivors
+    adult_survivors = titanic_df[(titanic_df['Age'] == 'Adult') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    adult_percentage = float((adult_survivors / total_passengers) * 100)
+
+    #get child survivors
+    child_survivors = titanic_df[(titanic_df['Age'] == 'Child') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    child_percentage = float(( child_survivors / total_passengers) * 100)
+
+    percentages = [child_percentage, adult_percentage]
+    fig, ax = plt.subplots()
+    ax.pie(percentages, labels=labels, autopct='%.2f%%')
+    plt.title('Adult vs Child Titanic Survivors')
+    plt.show()
+
+def class_statistics():
+    labels = '1st Class', '2nd Class', '3rd Class', 'Crew'
+
+    #get total passenger number
+    total_passengers = titanic_df["Freq"].sum()
+
+    #get 1st Class survivors
+    first_class_survivors = titanic_df[(titanic_df['Class'] == '1st') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    first_class_survivors_percentage = float((first_class_survivors / total_passengers) * 100)
+
+    #get 2nd class survivors
+    second_class_survivors = titanic_df[(titanic_df['Class'] == '2nd') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    second_class_survivors_percentage = float((second_class_survivors / total_passengers) * 100)
+
+    #get 3rd class survivors
+    third_class_survivors = titanic_df[(titanic_df['Class'] == '3rd') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    third_class_survivors_percentage = float((third_class_survivors / total_passengers) * 100)
+
+    #get crew survivors
+    crew_class_survivors = titanic_df[(titanic_df['Class'] == 'Crew') & (titanic_df['Survived'] == 'Yes')]["Freq"].sum()
+    crew_class_survivors_percentage = float((crew_class_survivors / total_passengers) * 100)
+
+    percentages = [first_class_survivors_percentage, second_class_survivors_percentage, third_class_survivors_percentage, crew_class_survivors_percentage]
+    fig, ax = plt.subplots()
+    ax.pie(percentages, labels=labels, autopct='%.2f%%')
+    plt.title('1st vs 2nd vs 3rd vs Crew Class Titanic Survivors')
+    plt.show()
+
+
+def survival_statistics():
+    print('1. Age\n'
+          '2. Sex\n'
+          '3. Class\n')
+    while True:
+        user_input = int(input('Please select a category on which you would like to see the statistics of: ').strip())
+        if user_input == 1:
+            age_statistics()
+        elif user_input == 2:
+            sex_statistics()
+        elif user_input == 3:
+            class_statistics()
+        else:
+            print('1. Age\n'
+                  '2. Sex\n'
+                  '3. Class\n')
+            print("Please enter either 1, 2, or 3")
+
+
+survival_statistics()
