@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 from numpy import random
 import matplotlib.pyplot as plt
@@ -5,7 +7,19 @@ import pandas as pd
 
 # reads data from titanic.csv
 # index_col removes index column
-titanic_csv = pd.read_csv('files/titanic.csv', index_col=0)
+filepath = 'files/titanic.csv'
+
+try:
+    if os.path.exists(filepath):
+        titanic_csv = pd.read_csv(filepath, index_col=0)
+    else:
+        raise FileNotFoundError(f"The file at {filepath} does not exist.")
+except FileNotFoundError as e:
+    # Handle the case where the file was not found
+    print(e)
+except Exception as e:
+    # Handle any other exceptions that might occur
+    print(f"An unexpected error occurred: {e}")
 
 user_info = {}
 menu_options = ['Home','Survival Probability Simulator', 'Survival Statistics', 'Exit']
@@ -153,8 +167,6 @@ def titanic_simulator():
     else:
         print(f"\nSorry, but you didn't survive! Your probability of survival  was approximately {survival_probability} or {(survival_probability * 100)}%")
 
-#titanic_simulator()
-
 def sex_statistics():
     labels = 'Male', 'Female'
 
@@ -228,10 +240,13 @@ def survival_statistics():
         user_input = int(input('Please select a category on which you would like to see the statistics of: ').strip())
         if user_input == 1:
             age_statistics()
+            return
         elif user_input == 2:
             sex_statistics()
+            return
         elif user_input == 3:
             class_statistics()
+            return
         else:
             print('1. Age\n'
                   '2. Sex\n'
@@ -239,4 +254,32 @@ def survival_statistics():
             print("Please enter either 1, 2, or 3")
 
 
-survival_statistics()
+def titanic_menu():
+    return_menu = 0
+    print('1. Survival Probability\n'
+          '2. Survival Statistics\n'
+          '3. Exit \n')
+    user_input = int(input('Please select an option: ').strip())
+    while True:
+        if return_menu != 0:
+            print('\nMenu Options: ')
+            print('1. Survival Probability\n'
+                  '2. Survival Statistics\n'
+                  '3. Exit \n')
+            user_input = int(input('Please select an option: ').strip())
+        if user_input == 1:
+            return_menu += 1
+            titanic_simulator()
+        elif user_input == 2:
+            return_menu += 1
+            survival_statistics()
+        elif user_input == 3:
+            return
+        else:
+            print('1. Survival Probability\n'
+                  '2. Survival Statistics\n'
+                  '3. Exit \n')
+            print("Please enter either 1, 2, or 3")
+
+titanic_menu()
+
